@@ -199,9 +199,36 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* Toast notification for save feedback */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(17, 24, 23, 0.95);
+            border: 1px solid rgba(218, 195, 134, 0.3);
+            color: #dac386;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 100;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            pointer-events: none;
+        }
+        
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="min-h-screen text-slate-100 flex flex-col lg:flex-row relative overflow-x-hidden antialiased">
+
+    <!-- Toast notification -->
+    <div id="save-toast" class="toast">Contact saved to your device!</div>
 
     <!-- Background Canvas for interactive floating particles -->
     <canvas id="bg-canvas" class="fixed top-0 left-0 w-full h-full -z-20 pointer-events-none"></canvas>
@@ -369,6 +396,16 @@
             }
         });
         
+        // Show toast notification
+        function showToast(message) {
+            const toast = document.getElementById('save-toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
         // Toggle social links sheet
         function toggleSocials() { 
             const contactSheet = document.getElementById('contact-sheet');
@@ -410,13 +447,13 @@
             const clientMessage = document.getElementById('form-message').value;
 
             const subject = (currentSubjectPrefix || 'Ceremony Enquiry') + ' - ' + clientName;
-            const body = 'Hi Teddy,\\n\\nYou have received a new enquiry from your digital business card:\\n\\n' +
-                         '---------------------------------------------\\n' +
-                         'Sender Name: ' + clientName + '\\n' +
-                         'Sender Email: ' + clientEmail + '\\n' +
-                         'Sender Phone: ' + clientPhone + '\\n' +
-                         '---------------------------------------------\\n\\n' +
-                         'Message:\\n' + clientMessage + '\\n\\n' +
+            const body = 'Hi Teddy,\n\nYou have received a new enquiry from your digital business card:\n\n' +
+                         '---------------------------------------------\n' +
+                         'Sender Name: ' + clientName + '\n' +
+                         'Sender Email: ' + clientEmail + '\n' +
+                         'Sender Phone: ' + clientPhone + '\n' +
+                         '---------------------------------------------\n\n' +
+                         'Message:\n' + clientMessage + '\n\n' +
                          'Sent via your digital design lab business card.';
 
             const mailtoUrl = 'mailto:' + currentEmail + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
@@ -452,23 +489,46 @@
             icon.style.display = "none"; 
             spin.style.display = "block";
 
-            const vCard = [
-                "BEGIN:VCARD", "VERSION:3.0",
+            // Build vCard with proper CRLF line endings (RFC 6350 compliant)
+            const lines = [
+                "BEGIN:VCARD",
+                "VERSION:3.0",
                 "FN:" + currentName,
                 "TITLE:Modern Celebrant & Filmmaker",
                 "ORG:Married By A Teddy",
                 "TEL;TYPE=CELL,VOICE:" + currentPhone,
-                "EMAIL:" + currentEmail, 
+                "EMAIL:" + currentEmail,
                 "URL:" + currentAppUrl,
                 "END:VCARD"
-            ].join("\\r\\n");
+            ];
+            
+            // Use actual carriage return + line feed for vCard spec compliance
+            const vCard = lines.join("\r\n");
 
-            const blob = new Blob([vCard], {type: 'text/vcard'}); 
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a'); 
-            link.href = url; 
-            link.download = currentName.replace(/\\s+/g, '_') + "_contact.vcf"; 
-            link.click();
+            try {
+                const blob = new Blob([vCard], {type: 'text/vcard'}); 
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a'); 
+                link.href = url; 
+                link.download = currentName.replace(/\s+/g, '_') + "_contact.vcf"; 
+                
+                // For iOS Safari: use Web Share API as fallback since download attribute doesn't work
+                if (navigator.share && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                    const file = new File([blob], currentName.replace(/\s+/g, '_') + "_contact.vcf", { type: 'text/vcard' });
+                    await navigator.share({
+                        files: [file],
+                        title: currentName + ' Contact Card'
+                    });
+                } else {
+                    link.click();
+                }
+                
+                URL.revokeObjectURL(url);
+                showToast('Contact saved! Check your downloads.');
+            } catch (err) {
+                console.error('vCard save failed:', err);
+                showToast('Tap and hold to save contact');
+            }
             
             setTimeout(() => { 
                 btn.style.opacity = "1"; 
@@ -528,7 +588,6 @@
             canvas.height = window.innerHeight;
             initParticles();
             animate();
-            // Re-initialize icons after dynamic content loads
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
