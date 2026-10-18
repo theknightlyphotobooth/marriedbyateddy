@@ -156,7 +156,7 @@
         }
     </style>
 <style>
-/* Cinematic staggered entrance: background first, then each content group. */
+/* Bottom-to-top cinematic reveal: background first, footer and buttons first, logo last. */
 #main-card { animation: none !important; opacity: 1; transform: none; }
 #el-logo-container, #el-coin, #el-name, #el-subtitles, #el-rating-container,
 #el-review, .actions > *, #el-footer {
@@ -170,18 +170,18 @@ body.preview-ready #el-rating-container, body.preview-ready #el-review,
 body.preview-ready .actions > *, body.preview-ready #el-footer {
   opacity: 1; transform: translateY(0);
 }
-body.preview-ready #el-logo-container { transition-delay: 180ms; }
-body.preview-ready #el-coin { transition-delay: 430ms; }
-body.preview-ready #el-name { transition-delay: 650ms; }
-body.preview-ready #el-subtitles { transition-delay: 770ms; }
-body.preview-ready #el-rating-container { transition-delay: 940ms; }
-body.preview-ready #el-review { transition-delay: 1080ms; }
-body.preview-ready .actions > :nth-child(1) { transition-delay: 1220ms; }
-body.preview-ready .actions > :nth-child(2) { transition-delay: 1370ms; }
-body.preview-ready .actions > :nth-child(3) { transition-delay: 1520ms; }
-body.preview-ready .actions > :nth-child(4) { transition-delay: 1670ms; }
-body.preview-ready .actions > :nth-child(5) { transition-delay: 1820ms; }
-body.preview-ready #el-footer { transition-delay: 1960ms; }
+body.preview-ready #el-logo-container { transition-delay: 1920ms; }
+body.preview-ready #el-coin { transition-delay: 1710ms; }
+body.preview-ready #el-name { transition-delay: 1510ms; }
+body.preview-ready #el-subtitles { transition-delay: 1390ms; }
+body.preview-ready #el-rating-container { transition-delay: 1210ms; }
+body.preview-ready #el-review { transition-delay: 1050ms; }
+body.preview-ready .actions > :nth-child(1) { transition-delay: 900ms; }
+body.preview-ready .actions > :nth-child(2) { transition-delay: 760ms; }
+body.preview-ready .actions > :nth-child(3) { transition-delay: 620ms; }
+body.preview-ready .actions > :nth-child(4) { transition-delay: 480ms; }
+body.preview-ready .actions > :nth-child(5) { transition-delay: 340ms; }
+body.preview-ready #el-footer { transition-delay: 160ms; }
 @media (prefers-reduced-motion: reduce) {
  #el-logo-container, #el-coin, #el-name, #el-subtitles, #el-rating-container,
  #el-review, .actions > *, #el-footer { opacity: 1; transform: none; transition: none; }
