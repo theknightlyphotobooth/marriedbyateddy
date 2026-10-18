@@ -156,42 +156,32 @@
         }
     </style>
 <style>
-/* Clear right-to-left entrance: elements enter from 95px right, top to bottom. */
-#main-card { animation: none !important; opacity: 1; transform: none; }
-@keyframes slideFromRight2026 {
-  from { opacity: 0; transform: translate3d(95px, 0, 0); }
+/* Unified drawer-style entrance: the entire card moves as one panel. */
+#main-card {
+  animation: none !important;
+  opacity: 0;
+  transform: translate3d(110%, 0, 0);
+  will-change: transform, opacity;
+}
+@keyframes unifiedCardSlide {
+  from { opacity: 0.75; transform: translate3d(110%, 0, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+body.preview-ready #main-card {
+  animation: unifiedCardSlide 1100ms cubic-bezier(.22,1,.36,1) both !important;
 }
 #el-logo-container, #el-coin, #el-name, #el-subtitles,
 #el-rating-container, #el-review, .actions > *, #el-footer {
-  opacity: 0;
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
 }
-body.preview-ready #el-logo-container,
-body.preview-ready #el-coin,
-body.preview-ready #el-name,
-body.preview-ready #el-subtitles,
-body.preview-ready #el-rating-container,
-body.preview-ready #el-review,
-body.preview-ready .actions > *,
-body.preview-ready #el-footer {
-  animation: slideFromRight2026 1050ms cubic-bezier(.22,1,.36,1) both;
-}
-body.preview-ready #el-footer { animation-delay: 1380ms; }
-body.preview-ready .actions > :nth-child(5) { animation-delay: 1260ms; }
-body.preview-ready .actions > :nth-child(4) { animation-delay: 1140ms; }
-body.preview-ready .actions > :nth-child(3) { animation-delay: 1020ms; }
-body.preview-ready .actions > :nth-child(2) { animation-delay: 900ms; }
-body.preview-ready .actions > :nth-child(1) { animation-delay: 780ms; }
-body.preview-ready #el-review { animation-delay: 640ms; }
-body.preview-ready #el-rating-container { animation-delay: 520ms; }
-body.preview-ready #el-subtitles { animation-delay: 400ms; }
-body.preview-ready #el-name { animation-delay: 300ms; }
-body.preview-ready #el-coin { animation-delay: 150ms; }
-body.preview-ready #el-logo-container { animation-delay: 0ms; }
 @media (prefers-reduced-motion: reduce) {
-  #el-logo-container, #el-coin, #el-name, #el-subtitles,
-  #el-rating-container, #el-review, .actions > *, #el-footer {
-    opacity: 1 !important; transform: none !important; animation: none !important;
+  #main-card, body.preview-ready #main-card {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    will-change: auto;
   }
 }
 </style>
