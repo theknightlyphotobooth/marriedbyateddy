@@ -155,6 +155,36 @@
             object-fit: contain;
         }
     </style>
+<style>
+/* Unified drawer-style entrance: the entire card moves as one panel. */
+#main-card {
+  animation: none !important;
+  opacity: 0;
+  transform: translate3d(110%, 0, 0);
+  will-change: transform, opacity;
+}
+@keyframes unifiedCardSlide {
+  from { opacity: 0.75; transform: translate3d(110%, 0, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+body.preview-ready #main-card {
+  animation: unifiedCardSlide 1100ms cubic-bezier(.22,1,.36,1) both !important;
+}
+#el-logo-container, #el-coin, #el-name, #el-subtitles,
+#el-rating-container, #el-review, .actions > *, #el-footer {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  #main-card, body.preview-ready #main-card {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    will-change: auto;
+  }
+}
+</style>
 </head>
 <body class="min-h-screen text-slate-100 flex flex-col lg:flex-row relative overflow-x-hidden antialiased" style="font-family: 'Inter', sans-serif;">
 
@@ -307,6 +337,15 @@
         const particlesEnabled = true;
         
         lucide.createIcons();
+        // Reveal once the profile photograph is ready, with a fallback for failed/slow images.
+        (() => {
+          const photo = document.getElementById('el-profile');
+          let shown = false;
+          const reveal = () => { if (!shown) { shown = true; requestAnimationFrame(() => document.body.classList.add('preview-ready')); } };
+          if (photo.complete) reveal();
+          else { photo.addEventListener('load', reveal, {once:true}); photo.addEventListener('error', reveal, {once:true}); }
+          setTimeout(reveal, 900);
+        })();
         
         function toggleSocials() { 
             const contactSheet = document.getElementById('contact-sheet');
