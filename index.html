@@ -103,13 +103,6 @@
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
-        .coin-wrapper.spin-enabled:hover .profile-media-container {
-            transform: rotateY(180deg);
-        }
-        .coin-wrapper.is-flipped .profile-media-container {
-            transform: rotateY(180deg) !important;
-        }
-        
         .face { 
             position: absolute; 
             width: 100%; 
@@ -236,12 +229,12 @@
             </div>
 
             <!-- Profile Coin -->
-            <div id="el-coin" class="coin-wrapper mt-4 shape-circle spin-enabled" onclick="handleFlipCoin()" style="width: 125px; height: 125px;">
+            <div id="el-coin" class="coin-wrapper mt-4 shape-circle" style="width: 125px; height: 125px;">
                 <div class="profile-media-container">
                     <div class="face face-front">
                         <img id="el-profile" src="./teddy-profile.jpg" class="w-full h-full object-cover select-none pointer-events-none" alt="Profile" style="transform: translate(2px, 0px) scale(1.3); transform-origin: center center;">
                     </div>
-                    <div class="face face-back" style="background-image: url('https://raw.githubusercontent.com/theknightlyphotobooth/Images-/01668a04aceed0bceecc35b363e5115693d4dd63/Back.jpg');"></div>
+                    
                 </div>
             </div>
 
@@ -310,7 +303,7 @@
         const currentTitle = "Modern Celebrant & Filmmaker";
         const currentOrg = "Married By A Teddy";
         const currentSubjectPrefix = "Wedding Enquiry from Digital Card";
-        const spinEnabled = true;
+        const spinEnabled = false;
         const particlesEnabled = true;
         
         lucide.createIcons();
